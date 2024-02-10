@@ -161,3 +161,341 @@ router.delete('/:spreadsheetId', (req, res) => __awaiter(void 0, void 0, void 0,
     }
 }));
 export default router;
+/**
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create a new spreadsheet
+ *     tags: [Spreadsheet]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Spreadsheet'
+ *     responses:
+ *       200:
+ *         description: The spreadsheet was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}:
+ *   get:
+ *     summary: Get a spreadsheet by ID
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: The spreadsheet was successfully retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}:
+ *   put:
+ *     summary: Update a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Spreadsheet'
+ *     responses:
+ *       200:
+ *         description: The spreadsheet was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}:
+ *   delete:
+ *     summary: Delete a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: The spreadsheet was successfully deleted
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/cell/{cellId}:
+ *   put:
+ *     summary: Update a cell in a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: cellId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               data:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: The cell was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/col/{colId}:
+ *   put:
+ *     summary: Update a column size in a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: colId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               size:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: The column size was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/row/{rowId}:
+ *   put:
+ *     summary: Update a row size in a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: rowId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               size:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: The row size was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/title:
+ *   put:
+ *     summary: Update the title of a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: The title was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/lastOpen:
+ *   put:
+ *     summary: Update the last open time of a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               lastOpen:
+ *                 type: string
+ *                 format: date-time
+ *     responses:
+ *       200:
+ *         description: The last open time was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * /spreadsheet/{spreadsheetId}/styles/{cellId}:
+ *   put:
+ *     summary: Update the styles of a cell in a spreadsheet
+ *     tags: [Spreadsheet]
+ *     parameters:
+ *       - in: path
+ *         name: spreadsheetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: cellId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               styles:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: The cell styles were successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Spreadsheet'
+ *       500:
+ *         description: Some server error
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Spreadsheet:
+ *       type: object
+ *       required:
+ *         - title
+ *         - lastOpen
+ *         - dataState
+ *         - rowState
+ *         - colState
+ *         - stylesState
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: The title of the spreadsheet
+ *         lastOpen:
+ *           type: string
+ *           format: date-time
+ *           description: The last time the spreadsheet was opened
+ *         dataState:
+ *           type: object
+ *           description: The data state of the spreadsheet
+ *         rowState:
+ *           type: object
+ *           description: The row state of the spreadsheet
+ *         colState:
+ *           type: object
+ *           description: The column state of the spreadsheet
+ *         stylesState:
+ *           type: object
+ *           description: The styles state of the spreadsheet
+ *       example:
+ *         title: Untitled
+ *         lastOpen: 2022-01-01T00:00:00.000Z
+ *         dataState: {}
+ *         rowState: {}
+ *         colState: {}
+ *         stylesState: {}
+ */ 

@@ -5,6 +5,9 @@ import protectedRoute from './routes/protectedRoute.js';
 import spreadsheetRoute from "./routes/spreadsheet.js";
 import cors from 'cors'
 import mongoose from "mongoose";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import options from "./swaggerOptions.js";
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -25,6 +28,13 @@ const app = express();
     app.use('/auth', authRoute);
     app.use('/protected', protectedRoute);
     app.use('/spreadsheet', spreadsheetRoute)
+
+    const specs = swaggerJsdoc(options);
+    app.use(
+        "/api-docs",
+        swaggerUi.serve,
+        swaggerUi.setup(specs, { explorer: true })
+    );
 
 
 
