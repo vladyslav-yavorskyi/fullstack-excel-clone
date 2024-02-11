@@ -1,4 +1,3 @@
-import { Action, Dispatch, MiddlewareAPI } from '@reduxjs/toolkit';
 
 export interface ICell {
   id: string | number;
@@ -39,9 +38,3 @@ export interface CellPros {
   currentCell: string;
 }
 
-export interface Middleware {
-  store: MiddlewareAPI;
-  next: Dispatch;
-  action: Action;
-  [otherProperty: string]: {};
-}

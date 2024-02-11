@@ -1,4 +1,4 @@
-import { Request as ExpressRequest, Response, NextFunction } from 'express';
+import {NextFunction, Request as ExpressRequest, Response} from 'express';
 import jwt from 'jsonwebtoken';
 
 interface Request extends ExpressRequest {
@@ -10,8 +10,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         return res.status(401).json({error: "Access Denied"});
     }
     try {
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET as string);
-        req.user = verified;
+        req.user = jwt.verify(token, process.env.TOKEN_SECRET as string);
         next();
     } catch (error) {
         res.status(400).json({error: "Invalid Token"});

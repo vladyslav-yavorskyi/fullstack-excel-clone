@@ -5,7 +5,7 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "start": "npx tsc && node server.js",
+    "start": "npx tsc && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "vladyslav Yavorskyi",
@@ -29,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.16",
     "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.6"
+    "@types/swagger-ui-express": "^4.1.6",
+    "nodemon": "^3.0.3"
   }
 }

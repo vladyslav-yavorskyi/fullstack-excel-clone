@@ -20,7 +20,7 @@ const app = express();
 // hide from hackers what stack we use
     app.disable('x-powered-by');
     app.use(cors({
-        origin: 'http://localhost:5137',
+        origin: 'http://localhost:5173',
         optionsSuccessStatus: 200,
         credentials: true
     }));

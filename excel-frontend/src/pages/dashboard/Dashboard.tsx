@@ -1,4 +1,3 @@
-import React from 'react';
 import TablesList from './TablesList';
 import { initialState } from '../../store/features/cellSlice';
 import { useNavigate } from 'react-router-dom';
