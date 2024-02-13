@@ -6,16 +6,17 @@ import {
   setCurrentStyle,
   setCurrentText,
 } from '../../store/features/cellSlice';
-import useDebaunce from '../../hooks/useDebaunce';
+import useDebounce from '../../hooks/useDebounce.ts';
 import { ICell } from '../../interfaces';
 import { nextSelector } from './utils/cellHelpers';
-import { memo, useState } from 'react';
+import React, { memo, useState } from 'react';
 import {
   clearGroup,
   handleIsSelecting,
   selectCells,
   setStartCoords,
 } from '../../store/features/groupSelectSlice';
+import axios from "axios";
 
 function Cell({ width, type, data_col, data_row }: ICell) {
   const [isActive, setIsActive] = useState(false);
@@ -24,17 +25,27 @@ function Cell({ width, type, data_col, data_row }: ICell) {
   );
   const dispatch = useAppDispatch();
 
-  const setText = useDebaunce((event: ContentEditableEvent) => {
-    dispatch(
-      addText({
-        coords: `${data_col}:${data_row}`,
-        text: event.target.value,
-      })
-    );
-    dispatch(setCurrentText({ text: event.target.value }));
+  const setText = useDebounce(async (event: ContentEditableEvent) => {
+    try {
+      dispatch(
+          addText({
+            coords: `${data_col}:${data_row}`,
+            text: event.target.value,
+          })
+      );
+      dispatch(setCurrentText({ text: event.target.value }));
+
+      await axios.put(`/spreadsheet/${window.location.pathname.split('/')[2]}/cell/${data_col}:${data_row}`, {
+        data: event.target.value
+      });
+    } catch (error) {
+        console.error('An error occurred while setting the text:', error);
+    }
+
   }, 400);
 
   const changeHandler = (event: ContentEditableEvent) => {
+
     setText(event);
   };
 
@@ -104,6 +115,7 @@ function Cell({ width, type, data_col, data_row }: ICell) {
     }
   };
 
+
   return (
     <div
       className={`relative text-center border-solid border-l-0 border-b-0 border-2 border-gray-300 z-10 `}
@@ -115,12 +127,14 @@ function Cell({ width, type, data_col, data_row }: ICell) {
       onBlur={() => setIsActive(false)}
     >
       <ContentEditable
-        style={{
+
+
+          style={{
           width,
           height: '100%',
           caretColor:
             dataState[`${data_col}:${data_row}` as keyof typeof dataState] ?? ''
-              ? ''
+              ? ' '
               : 'transparent',
         }}
         onMouseDown={startSelect}
@@ -131,11 +145,10 @@ function Cell({ width, type, data_col, data_row }: ICell) {
           }
         }}
         onKeyDown={keyHandler}
+        defaultValue={"foo"}
         onChange={changeHandler}
-        html={
-          dataState[`${data_col}:${data_row}` as keyof typeof dataState] ?? ''
-        }
-        disabled={type ? true : false}
+        html={dataState[`${data_col}:${data_row}` as keyof typeof dataState] || ""}
+        disabled={!!type}
         spellCheck={false}
         className={`flex items-center whitespace-nowrap outline-none text-ellipsis overflow-hidden`}
         data-col={data_col}

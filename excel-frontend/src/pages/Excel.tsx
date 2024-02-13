@@ -6,6 +6,7 @@ import Table from '../components/table/Table';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../hooks/redux';
 import { setState } from '../store/features/cellSlice';
+import axios from "axios";
 
 
 function Excel() {
@@ -14,15 +15,20 @@ function Excel() {
   const [isFetched, setIsFetched] = useState(false);
 
   useEffect(() => {
-    const setStateLocalStorage = () => {
-      const data = localStorage.getItem(`excel:${location.pathname.split('/')[2]}`);
-
-      if (data) {
-        dispatch(setState({ state: JSON.parse(data) }));
+    const setStateLocalStorage = async () => {
+      try {
+        const {data} = await axios.get(`/spreadsheet/${location.pathname.split('/')[2]}`);
+        console.log(data)
+        dispatch(setState({state: data[0]}));
         setIsFetched(true);
+      } catch (error) {
+        console.error('Failed to GET spreadsheet: ' ,error);
       }
     };
-    setStateLocalStorage();
+
+    setStateLocalStorage().catch(error => {
+      console.error('An error occurred while setting the local storage state:', error);
+    });
   }, [dispatch, location.pathname]);
 
   return (

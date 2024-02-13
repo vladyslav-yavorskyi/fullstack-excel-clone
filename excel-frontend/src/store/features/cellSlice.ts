@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { CellPros } from '../../interfaces';
-
-export const initialState: CellPros = {
+import {ISpreadsheet} from '../../interfaces';
+import axios from 'axios';
+import {useAppDispatch} from "../../hooks/redux.ts";
+export const initialState: ISpreadsheet = {
   title: 'Untitled',
   dataState: {},
   stylesState: {},
   colState: {},
   rowState: {},
-  currentText: '',
+  currentText: 'f',
   currentStyle: {},
   currentCell: '0:0',
 };
@@ -68,7 +69,8 @@ export const cellSlice = createSlice({
       state.currentStyle = {};
       state.currentCell = '0:0';
     },
-    setState: (state, action: PayloadAction<{ state: CellPros }>) => {
+    setState: (state, action: PayloadAction<{ state: ISpreadsheet }>) => {
+      console.log(action.payload.state)
       state.title = action.payload.state.title;
       state.dataState = action.payload.state.dataState;
       state.stylesState = action.payload.state.stylesState;
@@ -80,6 +82,17 @@ export const cellSlice = createSlice({
     },
   },
 });
+
+export const fetchSpreadsheet = async (id: string) => {
+  const dispatch = useAppDispatch();
+
+  try {
+    const { data } = await axios.get(`/spreadsheet/${id}`);
+    dispatch(setState({ ...data} ));
+  } catch (error) {
+    console.error('Failed to fetch spreadsheet: ' ,error);
+  }
+}
 
 // Action creators are generated for each case reducer function
 export const {

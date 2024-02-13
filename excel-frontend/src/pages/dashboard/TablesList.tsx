@@ -1,37 +1,30 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from "axios";
+import {ISpreadsheet} from "../../interfaces.ts";
 
 function TablesList() {
-  const [keys, setKeys] = React.useState<string[]>([]);
+
+
+  const [spreadsheets, setSpreadsheets] = React.useState<ISpreadsheet[]>([]);
 
   useEffect(() => {
-    const getAllKeys = () => {
-      const localKeys = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key?.includes('excel')) {
-          continue;
-        }
-        localKeys.push(key);
+    const getSpreadsheets = async () => {
+      try {
+        const { data } = await axios.get('/spreadsheet/');
+        console.log(data)
+        setSpreadsheets(data);
+      } catch (error) {
+        console.error('Failed to GET spreadsheets: ', error);
       }
-      return localKeys;
     };
 
-    const keysData = getAllKeys();
-    setKeys(keysData);
+    getSpreadsheets().catch((error) => {
+      console.error('An error occurred while getting the spreadsheets:', error);
+    });
   }, []);
 
-  const changeLastOpen = (key: string) => {
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        ...JSON.parse(localStorage.getItem(key) as string),
-        lastOpen: Date.now(),
-      })
-    );
-  };
-
-  if (!keys.length) return <p>You don't have any excel table.</p>;
+  if (spreadsheets.length === 0)  return <p>You don't have any spreadsheets...</p>
 
   return (
     <>
@@ -40,10 +33,9 @@ function TablesList() {
         <span>Date of open</span>
       </div>
       <ul className="m-0 p-0 list-none">
-        {keys.map((key, index) => (
+        {spreadsheets.map((spreadsheet, index) => (
           <Link
-            to={`/excel/${key.split(':')[1]}`}
-            onClick={() => changeLastOpen(key)}
+            to={`/excel/${spreadsheet._id}`}
             key={index}
           >
             <li
@@ -51,19 +43,10 @@ function TablesList() {
               key={index}
             >
               <p className="no-underline hover:underline text-gray-700 text-base md:text-lg lg:text-xl">
-                {JSON.parse(String(localStorage.getItem(key))).title}
+                {spreadsheet.title}
               </p>
               <strong>
-                {new Date(
-                  JSON.parse(String(localStorage.getItem(key))).lastOpen
-                ).toLocaleDateString([], {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                })}
+                {spreadsheet.updatedAt}
               </strong>
             </li>
           </Link>

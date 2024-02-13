@@ -17,7 +17,12 @@ export interface IStaticCell {
   data_row?: number;
 }
 
-export interface CellPros {
+export interface ISpreadsheet {
+  _id?: string;
+  __v?: number;
+  updatedAt?: string;
+  createdAt?: string;
+
   title: string;
   dataState: {
     [key: string]: string;
@@ -25,7 +30,7 @@ export interface CellPros {
   stylesState: {
     [key: string]: object;
   };
-  currentStyle: {
+  currentStyle?: {
     [key: string]: string;
   };
   colState: {
@@ -34,7 +39,7 @@ export interface CellPros {
   rowState: {
     [key: string]: Number;
   };
-  currentText: string;
-  currentCell: string;
+  currentText?: string;
+  currentCell?: string;
 }
 

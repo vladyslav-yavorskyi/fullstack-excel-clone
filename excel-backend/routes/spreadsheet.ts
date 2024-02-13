@@ -26,6 +26,15 @@ router.post('/', async (req, res) => {
         res.status(500).json(err);
     }
 });
+router.get('/', async (req, res) => {
+    try {
+        const spreadsheets = await Spreadsheet.find();
+        res.status(200).json(spreadsheets);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 router.get('/:spreadsheetId', async (req: Request, res: Response) => {
     try {
         const spreadsheets = await Spreadsheet.find({ _id: req.params.spreadsheetId });
@@ -34,7 +43,6 @@ router.get('/:spreadsheetId', async (req: Request, res: Response) => {
         res.status(500).json(err);
     }
 })
-
 router.put('/:spreadsheetId/cell/:cellId', async (req, res) => {
     try {
         const spreadsheet = await Spreadsheet.findById(req.params.spreadsheetId);
@@ -136,7 +144,7 @@ router.put('/:spreadsheetId/lastOpen', async (req, res) => {
     }
 });
 
-router.put('/:spreadsheetId/styles/:cellId', async (req, res) => {
+router.put('/:spreadsheetId/styles', async (req, res) => {
     try {
         const spreadsheet = await Spreadsheet.findById(req.params.spreadsheetId);
         if (!spreadsheet) {
@@ -145,7 +153,9 @@ router.put('/:spreadsheetId/styles/:cellId', async (req, res) => {
 
         // Update the styles
         if (spreadsheet.stylesState) {
-            spreadsheet.stylesState.set(req.params.cellId, req.body.styles);
+            req.body.cells.forEach((cellId: string) => {
+                spreadsheet?.stylesState?.set(cellId, req.body.styles);
+            });
         }
 
         // Save the updated spreadsheet
@@ -156,7 +166,6 @@ router.put('/:spreadsheetId/styles/:cellId', async (req, res) => {
         res.status(500).json(err);
     }
 });
-
 router.put('/:spreadsheetId', async (req, res) => {
     try {
         const updatedSpreadsheet = await Spreadsheet.findByIdAndUpdate(req.params.spreadsheetId, {
@@ -201,6 +210,25 @@ export default router;
  *               $ref: '#/components/schemas/Spreadsheet'
  *       500:
  *         description: Some server error
+ */
+
+/**
+ * @swagger
+ * /:
+ *  get:
+ *      summary: Get all spreadsheets
+ *      tags: [Spreadsheet]
+ *      responses:
+ *          200:
+ *              description: The spreadsheets were successfully retrieved
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                          $ref: '#/components/schemas/Spreadsheet'
+ *          500:
+ *              description: Some server error
  */
 
 /**

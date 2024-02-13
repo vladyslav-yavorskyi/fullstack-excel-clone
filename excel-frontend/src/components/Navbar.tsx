@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import icon from '../icons/icon.png';
 import { setTitle } from '../store/features/cellSlice';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import Modal from './Modal';
+import axios from "axios";
 
 function Navbar() {
   const dispatch = useAppDispatch();
@@ -11,7 +12,7 @@ function Navbar() {
   const [modalOpen, setModalOpen] = useState(false);
   const [localTitle, setLocalTitle] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
-  const navitage = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLocalTitle(title);
@@ -21,25 +22,42 @@ function Navbar() {
     setLocalTitle(event.target.value);
   };
 
-  const checkEmptyTitle = () => {
+  const changeTitle = async (newTitle: string) => {
+    try {
+      dispatch(setTitle({ title: newTitle }));
+      await axios.put(`/spreadsheet/${window.location.pathname.split('/')[2]}`, {
+        title: newTitle
+      })
+    } catch (error) {
+        console.error('Failed to set title: ', error);
+    }
+  }
+
+  const checkEmptyTitle = async () => {
     if (localTitle === '') {
       setLocalTitle('Untitled');
-      dispatch(setTitle({ title: 'Untitled' }));
+      await changeTitle('Untitled');
     } else {
-      dispatch(setTitle({ title: localTitle }));
+      await changeTitle(localTitle)
     }
   };
 
   const keyHandler = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       inputRef.current?.blur();
-      checkEmptyTitle();
+      checkEmptyTitle().catch((error) => {
+        console.error('An error occurred while setting the title:', error);
+      });
     }
   };
 
-  const deleteSpreadSheet = () => {
-    localStorage.removeItem('excel:' + window.location.pathname.split('/')[2]);
-    navitage('/');
+  const deleteSpreadSheet = async () => {
+    try {
+      await axios.delete(`/spreadsheet/${window.location.pathname.split('/')[2]}`);
+      navigate('/');
+    } catch (error) {
+        console.error('Failed to DELETE spreadsheet: ', error);
+    }
   };
 
   return (

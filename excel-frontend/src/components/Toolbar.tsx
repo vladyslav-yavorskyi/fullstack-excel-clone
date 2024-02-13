@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBold, faItalic, faUnderline } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setCurrentStyle, setStyle } from '../store/features/cellSlice';
+import axios from "axios";
 
 function Toolbar() {
   const { currentCell, currentStyle } = useAppSelector((state) => state.cellReducer);
@@ -15,22 +16,30 @@ function Toolbar() {
     textDecoration: false,
   });
 
+  const updateStyle = async (style: any, value: any, cells: string[]) => {
+    const updatedStyle = { ...currentStyle, [style]: value };
+    dispatch(setCurrentStyle({ style: updatedStyle }));
+    await axios.put(`/spreadsheet/${window.location.pathname.split('/')[2]}/styles`, {
+      styles: updatedStyle,
+      cells
+    });
+    const targetCell = group.length ? group : [currentCell];
+    targetCell.forEach((cell) => {
+      dispatch(setStyle({ styleObj: { cell: cell as string, style, value } }));
+    });
+  };
+
   const clickHandler = (style: string, value: string) => {
-    return () => {
-      const updateStyle = (style: any, value: any) => {
-        const updatedStyle = { ...currentStyle, [style]: value };
-        dispatch(setCurrentStyle({ style: updatedStyle }));
-
-        const targetCell = group.length ? group : [currentCell];
-        targetCell.forEach((cell) => {
-          dispatch(setStyle({ styleObj: { cell, style, value } }));
-        });
-      };
-
-      if (currentStyle[style as keyof typeof styles]) {
-        updateStyle(style, '');
-      } else {
-        updateStyle(style, value);
+    return async () => {
+      const targetCells = (group.length ? group : [currentCell]).filter(Boolean) as string[];
+      try {
+        if (currentStyle?.[style as keyof typeof styles]) {
+          await updateStyle(style, '', targetCells);
+        } else {
+          await updateStyle(style, value, targetCells);
+        }
+      } catch (error) {
+        console.error('Failed to update style: ', error);
       }
     };
   };

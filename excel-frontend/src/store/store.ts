@@ -7,11 +7,13 @@ const persistedState = JSON.parse(
   localStorage.getItem('myAppReduxState') || '{}'
 );
 
+const rootReducer = combineReducers({
+  groupSelectReducer,
+  cellReducer,
+});
+
 export const store = configureStore({
-  reducer: {
-    cellReducer,
-    groupSelectReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(localStorageMiddleware);
   },

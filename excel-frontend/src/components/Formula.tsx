@@ -9,7 +9,7 @@ function Formula() {
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setCurrentText({ text: event.target.value }));
-    dispatch(addText({ coords: currentCell, text: event.target.value }));
+    dispatch(addText({ coords: currentCell as string, text: event.target.value }));
   };
 
   return (
@@ -19,7 +19,7 @@ function Formula() {
         className="border-solid border-2 border-gray-300 rounded"
         type="text"
         spellCheck={false}
-        value={currentText}
+        value={currentText || ''}
         onChange={changeHandler}
       />
     </div>

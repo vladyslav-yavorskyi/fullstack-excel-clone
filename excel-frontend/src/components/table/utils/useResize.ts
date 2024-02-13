@@ -1,6 +1,7 @@
 import { useState, DragEvent } from 'react';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setColState, setRowState } from '../../../store/features/cellSlice';
+import axios from "axios";
 
 interface ICell {
   resizable: any;
@@ -23,29 +24,40 @@ const useResize = ({ resizable, type, data_col, data_row }: ICell) => {
     );
   };
 
-  const endResize = (e: DragEvent) => {
+  const endResize = async (e: DragEvent) => {
     const resizer = document.getElementById(`resizer-${type}`);
+    try {
+      if (type === 'col') {
+        resizable!.style.width = `${
+            initialSize + String(e.clientX - Number(initialPos))
+        }px`;
 
-    if (type === 'col') {
-      resizable!.style.width = `${
-        initialSize + String(e.clientX - Number(initialPos))
-      }px`;
+        dispatch(
+            setColState({
+              coords: String(data_col),
+              col: initialSize + (e.clientX - initialPos),
+            })
+        );
 
-      dispatch(
-        setColState({
-          coords: String(data_col),
-          col: initialSize + (e.clientX - initialPos),
-        })
-      );
-    } else {
-      resizable!.style.height = `${initialSize + (e.clientY - initialPos)}px`;
+        await axios.put(`/spreadsheet/${window.location.pathname.split('/')[2]}/col/${data_col}`, {
+          size: initialSize + (e.clientX - initialPos)
+        });
+      } else {
+        resizable!.style.height = `${initialSize + (e.clientY - initialPos)}px`;
 
-      dispatch(
-        setRowState({
-          coords: String(data_row),
-          row: initialSize + (e.clientY - initialPos),
-        })
-      );
+        dispatch(
+            setRowState({
+              coords: String(data_row),
+              row: initialSize + (e.clientY - initialPos),
+            })
+        );
+        await axios.put(`/spreadsheet/${window.location.pathname.split('/')[2]}/row/${data_row}`, {
+          size: initialSize + (e.clientY - initialPos)
+        });
+      }
+
+    } catch (error) {
+        console.error('An error occurred while resizing:', error);
     }
 
     resizer!.style[`${type === 'col' ? 'left' : 'top'}`] = `${-5000}px`;

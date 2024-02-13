@@ -1,21 +1,24 @@
 import TablesList from './TablesList';
-import { initialState } from '../../store/features/cellSlice';
+import {setState} from '../../store/features/cellSlice';
 import { useNavigate } from 'react-router-dom';
 import icon from '../../icons/icon.png';
 import profile from '../../icons/img.jpg';
+import {useAppDispatch} from "../../hooks/redux.ts";
+import axios from "axios";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const handleSpreadsheet = () => {
-    const id = Date.now();
-    console.log({ ...initialState, lastOpen: id });
-
-    localStorage.setItem(
-      `excel:${id}`,
-      JSON.stringify({ ...initialState, lastOpen: id })
-    );
-    navigate(`/excel/${id}`);
+  const handleSpreadsheet = async () => {
+    try {
+      const { data } = await axios.post(`/spreadsheet/`);
+      console.log(data)
+      dispatch(setState({state: data}));
+      navigate(`/excel/${data._id}`);
+    } catch (error) {
+      console.error('Failed to fetch spreadsheet: ' ,error);
+    }
   };
 
   return (
