@@ -9,7 +9,7 @@ export const initialState: ISpreadsheet = {
   stylesState: {},
   colState: {},
   rowState: {},
-  currentText: 'f',
+  currentText: '',
   currentStyle: {},
   currentCell: '0:0',
 };

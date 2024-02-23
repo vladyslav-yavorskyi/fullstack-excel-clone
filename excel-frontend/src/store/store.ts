@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import cellReducer from './features/cellSlice';
 import groupSelectReducer from './features/groupSelectSlice';
+import authReducer from './features/authSlice';
 import { localStorageMiddleware } from './localStorageMiddleware';
 
 const persistedState = JSON.parse(
@@ -10,6 +11,7 @@ const persistedState = JSON.parse(
 const rootReducer = combineReducers({
   groupSelectReducer,
   cellReducer,
+  authReducer
 });
 
 export const store = configureStore({

@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import axios from "axios";
+import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
+import {login} from "../store/middlewares/authMiddleware.ts";
 
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const {loading} = useAppSelector((state: any) => state.authReducer);
+
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            await axios.post('/auth/login', {
-                username,
-                password
-            });
+
+            dispatch(login({username, password}));
 
             setUsername('');
             setPassword('');
@@ -55,7 +58,7 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <div className="flex items-center justify-between">
+                { loading ? <div><span>Loading...</span></div>:<div className="flex items-center justify-between">
                     <button
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="submit"
@@ -66,7 +69,7 @@ const Login = () => {
                         Don't have an account? <Link to="/register"
                                                      className="text-green-500 hover:text-green-700">Register</Link>
                     </div>
-                </div>
+                </div>}
 
             </form>
         </div>
